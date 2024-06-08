@@ -29,7 +29,7 @@ public class JobsService {
     @Autowired
     RestTemplate restTemplate;
     
-    final String COMPANY_BASE_URL="http://COMPANY-SERVICE:8082/company";
+    final String COMPANY_BASE_URL="http://COMPANY-MICRO-SERVICE:8081/company";
     
 
     public ResponseEntity<Object> getAllJobs(){

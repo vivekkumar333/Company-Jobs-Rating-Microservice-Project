@@ -33,9 +33,10 @@ public class ReviewsService {
     @Autowired
     RestTemplate restTemplate;
 
-//    final String Job_SERVICE_BASE_URL="http://JOB-SERVICE:8081/job";
-    final String Job_SERVICE_BASE_URL="http://localhost:8081/job";
-    final String COMPANY_SERVICE_BASE_URL="http://COMPANY_SERVICE:8082/company";
+//    final String Job_SERVICE_BASE_URL="http://JOB-MICRO-SERVICE:8082/job";
+//    final String COMPANY_SERVICE_BASE_URL="http://COMPANY-MICRO-SERVICE:8081/company";
+    final String Job_SERVICE_BASE_URL="http://localhost:8082/job";
+    final String COMPANY_SERVICE_BASE_URL="http://localhost:8081/company";
 
     public ResponseEntity<Object> fetchRaitingList(){
         try {

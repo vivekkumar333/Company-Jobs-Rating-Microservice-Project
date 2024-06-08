@@ -15,7 +15,7 @@ import com.learnwithtiwari.raitingservice.request.ReviewRequest;
 import com.learnwithtiwari.raitingservice.service.ReviewsService;
 
 @RestController
-@RequestMapping("/raiting")
+@RequestMapping("/rating")
 public class ReviewsController {
     @Autowired
     ReviewsService reviewsService;
