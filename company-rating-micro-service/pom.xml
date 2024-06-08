@@ -9,9 +9,9 @@
 		<relativePath /> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>tiwari.in</groupId>
-	<artifactId>Company-Review-Raiting-Service</artifactId>
+	<artifactId>company-rating-micro-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Company-Review-Raiting-Service</name>
+	<name>company-rating-micro-service</name>
 	<description>Company-Review-Raiting-Service Eureka Client</description>
 	<properties>
 		<java.version>17</java.version>
@@ -74,6 +74,7 @@
 	</dependencyManagement>		
 
 	<build>
+		<finalName>company-rating-micro-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

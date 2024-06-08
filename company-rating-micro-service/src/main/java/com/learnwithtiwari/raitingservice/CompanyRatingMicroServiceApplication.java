@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-public class CompanyReviewRaitingServiceApplication {
+public class CompanyRatingMicroServiceApplication {
 
 	@Bean
 	RestTemplate restTemplate() {
@@ -14,7 +14,7 @@ public class CompanyReviewRaitingServiceApplication {
 	}
 	
 	public static void main(String[] args) {
-		SpringApplication.run(CompanyReviewRaitingServiceApplication.class, args);
+		SpringApplication.run(CompanyRatingMicroServiceApplication.class, args);
 	}
 
 }
