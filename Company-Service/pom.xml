@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>tiwari.in</groupId>
-	<artifactId>Company-Service</artifactId>
+	<artifactId>company-micro-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Company-Service</name>
+	<name>company-micro-service</name>
 	<description>Company-Service Eureka Client</description>
 	<properties>
 		<java.version>17</java.version>
@@ -77,6 +77,7 @@
 	</dependencyManagement>
 
 	<build>
+		<finalName>company-micro-service</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
