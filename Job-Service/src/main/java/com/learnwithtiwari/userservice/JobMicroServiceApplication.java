@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
-public class JobServiceApplication {
+public class JobMicroServiceApplication {
 	
 
 	@Bean @LoadBalanced
@@ -17,7 +17,7 @@ public class JobServiceApplication {
 
 
 	public static void main(String[] args) {
-		SpringApplication.run(JobServiceApplication.class, args);
+		SpringApplication.run(JobMicroServiceApplication.class, args);
 	}
 
 }
