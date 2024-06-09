@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>tiwari.in</groupId>
-	<artifactId>job-company-rating-service-registry</artifactId>
+	<artifactId>service-registry</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>job-company-rating-service-registry</name>
-	<description>Eureka Server service registory</description>
+	<name>service-registry</name>
+	<description>Eureka Server service registry</description>
 	<properties>
 		<java.version>17</java.version>
 		<spring-cloud.version>2023.0.2</spring-cloud.version>
@@ -46,7 +46,7 @@
 	</dependencyManagement>
 
 	<build>
-		<finalName>job-company-rating-service-registry</finalName>
+		<finalName>service-registry</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
