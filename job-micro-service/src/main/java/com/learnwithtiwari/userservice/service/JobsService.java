@@ -36,7 +36,7 @@ public class JobsService {
     
     public ResponseEntity<Object> companySerivceBreakerFallBack(Exception ex){
     	 ex.printStackTrace();
-         return new ResponseEntity<>("Fallback response: Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+         return new ResponseEntity<>("Fallback response: Company-Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
      }
 
     

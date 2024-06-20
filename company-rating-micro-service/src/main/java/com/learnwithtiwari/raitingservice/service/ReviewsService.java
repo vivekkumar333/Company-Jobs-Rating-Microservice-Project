@@ -25,6 +25,8 @@ import com.learnwithtiwari.raitingservice.request.ReviewRequest;
 import com.learnwithtiwari.raitingservice.response.JobCompanyRaitingsResponse;
 import com.learnwithtiwari.raitingservice.response.RaitingResponse;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @Service
 public class ReviewsService {
     @Autowired
@@ -38,8 +40,9 @@ public class ReviewsService {
     final String Job_SERVICE_BASE_URL="http://localhost:8082/job";
     final String COMPANY_SERVICE_BASE_URL="http://localhost:8081/company";
 
+    @CircuitBreaker(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
     public ResponseEntity<Object> fetchRaitingList(){
-        try {
+//        try {
         	
         	List<JobsDTO> jobs = restTemplate.exchange(Job_SERVICE_BASE_URL+"/fetchList", HttpMethod.GET, null, new ParameterizedTypeReference<List<JobsDTO>>() {}).getBody();
         			
@@ -62,18 +65,21 @@ public class ReviewsService {
             }else{
                 return new ResponseEntity<>("Not found! Job List is empty, First Create Jobs to fetch company raiting List", HttpStatus.OK);
             }
-    	}catch(RestClientException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-    	}catch(RuntimeException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    	}
+//    	}catch(RestClientException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+//    	}catch(RuntimeException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    	}
         
     }
+    
+    
 
+    @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
     public ResponseEntity<String> createReviews(ReviewRequest reviewReq){  
-        try {
+//        try {
     		Company company= restTemplate.getForObject(COMPANY_SERVICE_BASE_URL+"/get/"+reviewReq.getCompanyId(), Company.class);
     		
     		ReviewRaiting savedReview = null;
@@ -87,17 +93,18 @@ public class ReviewsService {
             }else{
                 return new ResponseEntity<>("Company raiting failed", HttpStatus.INTERNAL_SERVER_ERROR);
             }
-    	}catch(RestClientException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-    	}catch(RuntimeException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    	}
+//    	}catch(RestClientException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+//    	}catch(RuntimeException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    	}
     }
 
+    @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
     public ResponseEntity<String> updateComapnyRaiting(Long reviewId, ReviewRequest updateReview){      
-        try {
+//        try {
     		Company company= restTemplate.getForObject(COMPANY_SERVICE_BASE_URL+"/get/"+updateReview.getCompanyId(), Company.class);
     		Optional<ReviewRaiting> savedReview = reviewsRepo.findById(reviewId);
     	
@@ -112,18 +119,19 @@ public class ReviewsService {
             }else{
                 return new ResponseEntity<>("failed! Company not found", HttpStatus.NOT_FOUND);
             }
-    	}catch(RestClientException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-    	}catch(RuntimeException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    	}
+//    	}catch(RestClientException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+//    	}catch(RuntimeException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    	}
 
     }
 
+    @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
     public ResponseEntity<Object> getRaitingById(Long id){
-        try {
+ //       try {
         	Optional<ReviewRaiting> savedReview = reviewsRepo.findById(id);
         	if(savedReview.isPresent()) {
         		Company company= restTemplate.getForObject(COMPANY_SERVICE_BASE_URL+"/get/"+savedReview.get().getCompanyId(), Company.class);
@@ -135,13 +143,13 @@ public class ReviewsService {
                 return new ResponseEntity<>("Not found! Company raiting not found", HttpStatus.OK);
             }
            
-    	}catch(RestClientException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-    	}catch(RuntimeException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    	}
+//    	}catch(RestClientException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+//    	}catch(RuntimeException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    	}
     }
 
 
@@ -155,4 +163,15 @@ public class ReviewsService {
             return new ResponseEntity<>("Not Found! Company Raiting not found", HttpStatus.OK);
         }
     }
+    
+    
+    public ResponseEntity<Object> jobServiceFallBackMethod(Throwable t){
+   	 t.printStackTrace();
+        return new ResponseEntity<>("Fallback response: Job-Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+   }
+   
+   public ResponseEntity<Object> companySerivceFallBackMethod(Exception ex){
+  	 ex.printStackTrace();
+       return new ResponseEntity<>("Fallback response: Company-Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+   }
 }
