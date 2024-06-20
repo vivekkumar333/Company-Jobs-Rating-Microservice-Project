@@ -26,6 +26,7 @@ import com.learnwithtiwari.raitingservice.response.JobCompanyRaitingsResponse;
 import com.learnwithtiwari.raitingservice.response.RaitingResponse;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
 public class ReviewsService {
@@ -34,6 +35,8 @@ public class ReviewsService {
     
     @Autowired
     RestTemplate restTemplate;
+    
+    int attempt = 0;
 
 //    final String Job_SERVICE_BASE_URL="http://JOB-MICRO-SERVICE:8082/job";
 //    final String COMPANY_SERVICE_BASE_URL="http://COMPANY-MICRO-SERVICE:8081/company";
@@ -41,6 +44,7 @@ public class ReviewsService {
     final String COMPANY_SERVICE_BASE_URL="http://localhost:8081/company";
 
     @CircuitBreaker(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
+    @Retry(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
     public ResponseEntity<Object> fetchRaitingList(){
 //        try {
         	
@@ -78,6 +82,7 @@ public class ReviewsService {
     
 
     @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
+    @Retry(name = "companyServiceBreaker")
     public ResponseEntity<String> createReviews(ReviewRequest reviewReq){  
 //        try {
     		Company company= restTemplate.getForObject(COMPANY_SERVICE_BASE_URL+"/get/"+reviewReq.getCompanyId(), Company.class);
@@ -103,6 +108,7 @@ public class ReviewsService {
     }
 
     @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
+    @Retry(name = "companyServiceBreaker")
     public ResponseEntity<String> updateComapnyRaiting(Long reviewId, ReviewRequest updateReview){      
 //        try {
     		Company company= restTemplate.getForObject(COMPANY_SERVICE_BASE_URL+"/get/"+updateReview.getCompanyId(), Company.class);
@@ -130,6 +136,7 @@ public class ReviewsService {
     }
 
     @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
+    @Retry(name = "companyServiceBreaker")
     public ResponseEntity<Object> getRaitingById(Long id){
  //       try {
         	Optional<ReviewRaiting> savedReview = reviewsRepo.findById(id);
@@ -166,8 +173,9 @@ public class ReviewsService {
     
     
     public ResponseEntity<Object> jobServiceFallBackMethod(Throwable t){
+    	System.out.println("---- Attempt Count: "+  attempt++);	
    	 t.printStackTrace();
-        return new ResponseEntity<>("Fallback response: Job-Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+     return new ResponseEntity<>("Fallback response: Job-Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
    }
    
    public ResponseEntity<Object> companySerivceFallBackMethod(Exception ex){
