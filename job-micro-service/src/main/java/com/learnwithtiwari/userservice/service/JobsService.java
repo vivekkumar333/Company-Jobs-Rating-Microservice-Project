@@ -20,6 +20,8 @@ import com.learnwithtiwari.userservice.request.UpdateJobRequest;
 import com.learnwithtiwari.userservice.response.CompanyDTO;
 import com.learnwithtiwari.userservice.response.JobsResponseDTO;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @Service
 public class JobsService {
 
@@ -31,10 +33,18 @@ public class JobsService {
     
     final String COMPANY_BASE_URL="http://COMPANY-MICRO-SERVICE:8081/company";
     
+    
+    public ResponseEntity<Object> companySerivceBreakerFallBack(Exception ex){
+    	 ex.printStackTrace();
+         return new ResponseEntity<>("Fallback response: Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+     }
 
+    
+
+    @CircuitBreaker(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
     public ResponseEntity<Object> getAllJobs(){
     	
-    	try {
+//    	try {
     		List<Jobs> jobList = jobsRepo.findAll();
             
             List<JobsResponseDTO> jobResponse = new ArrayList<>();
@@ -63,13 +73,13 @@ public class JobsService {
             }else{
                 return new ResponseEntity<>("Not found! Job list is empty", HttpStatus.NOT_FOUND);
             }
-    	}catch(RestClientException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-    	}catch(RuntimeException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    	}
+//    	}catch(RestClientException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+//    	}catch(RuntimeException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    	}
         
     }
 
