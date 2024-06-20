@@ -26,6 +26,7 @@ import com.learnwithtiwari.raitingservice.response.JobCompanyRaitingsResponse;
 import com.learnwithtiwari.raitingservice.response.RaitingResponse;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
@@ -44,7 +45,8 @@ public class ReviewsService {
     final String COMPANY_SERVICE_BASE_URL="http://localhost:8081/company";
 
     @CircuitBreaker(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
-    @Retry(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
+//    @Retry(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
+    @RateLimiter(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
     public ResponseEntity<Object> fetchRaitingList(){
 //        try {
         	
@@ -82,7 +84,8 @@ public class ReviewsService {
     
 
     @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
-    @Retry(name = "companyServiceBreaker")
+//    @Retry(name = "companyServiceBreaker")
+    @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
     public ResponseEntity<String> createReviews(ReviewRequest reviewReq){  
 //        try {
     		Company company= restTemplate.getForObject(COMPANY_SERVICE_BASE_URL+"/get/"+reviewReq.getCompanyId(), Company.class);
@@ -108,7 +111,8 @@ public class ReviewsService {
     }
 
     @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
-    @Retry(name = "companyServiceBreaker")
+//  @Retry(name = "companyServiceBreaker")
+  @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
     public ResponseEntity<String> updateComapnyRaiting(Long reviewId, ReviewRequest updateReview){      
 //        try {
     		Company company= restTemplate.getForObject(COMPANY_SERVICE_BASE_URL+"/get/"+updateReview.getCompanyId(), Company.class);
@@ -136,7 +140,8 @@ public class ReviewsService {
     }
 
     @CircuitBreaker(name="companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
-    @Retry(name = "companyServiceBreaker")
+//  @Retry(name = "companyServiceBreaker")
+    @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceFallBackMethod")
     public ResponseEntity<Object> getRaitingById(Long id){
  //       try {
         	Optional<ReviewRaiting> savedReview = reviewsRepo.findById(id);

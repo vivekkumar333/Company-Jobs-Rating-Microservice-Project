@@ -21,6 +21,7 @@ import com.learnwithtiwari.userservice.response.CompanyDTO;
 import com.learnwithtiwari.userservice.response.JobsResponseDTO;
 
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 
 @Service
@@ -34,8 +35,6 @@ public class JobsService {
     
     final String COMPANY_BASE_URL="http://COMPANY-MICRO-SERVICE:8081/company";
     
-    int attempt =0;
-    
     public ResponseEntity<Object> companySerivceBreakerFallBack(Exception ex){
     	 ex.printStackTrace();
          return new ResponseEntity<>("Fallback response: Company-Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
@@ -43,10 +42,10 @@ public class JobsService {
 
     
 
-//    @CircuitBreaker(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
-    @Retry(name = "companyServiceBreaker")
+    @CircuitBreaker(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
+//    @Retry(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
+    @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
     public ResponseEntity<Object> getAllJobs(){
-    	System.out.println("----- Attempt Count: "+ attempt++);
 //    	try {
     		List<Jobs> jobList = jobsRepo.findAll();
             
@@ -86,7 +85,8 @@ public class JobsService {
         
     }
 
-    
+    @CircuitBreaker(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
+    @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
     public ResponseEntity<String> createJobs(JobCreationRequest jobInput){
     	
     	try {
@@ -121,7 +121,9 @@ public class JobsService {
         
     }
 
-    
+
+    @CircuitBreaker(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
+    @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
     public ResponseEntity<String> updateJobs(Long jobId, UpdateJobRequest updateJob){
     	
     	try {
