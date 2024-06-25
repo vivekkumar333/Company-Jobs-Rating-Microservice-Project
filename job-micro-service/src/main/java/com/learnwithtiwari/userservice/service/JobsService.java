@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -33,7 +34,9 @@ public class JobsService {
     @Autowired
     RestTemplate restTemplate;
     
-    final String COMPANY_BASE_URL="http://COMPANY-MICRO-SERVICE:8081/company";
+    
+    @Value("${company-service.url}")
+    private String COMPANY_BASE_URL;;
     
     public ResponseEntity<Object> companySerivceBreakerFallBack(Exception ex){
     	 ex.printStackTrace();

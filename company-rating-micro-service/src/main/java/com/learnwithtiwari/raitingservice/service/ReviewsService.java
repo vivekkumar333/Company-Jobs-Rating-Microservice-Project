@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -39,10 +40,15 @@ public class ReviewsService {
     
     int attempt = 0;
 
+  @Value("${job-service.url}")  
+  private String Job_SERVICE_BASE_URL;
+  
+  @Value("${company-service.url}")
+  private String COMPANY_SERVICE_BASE_URL;;   
 //    final String Job_SERVICE_BASE_URL="http://JOB-MICRO-SERVICE:8082/job";
 //    final String COMPANY_SERVICE_BASE_URL="http://COMPANY-MICRO-SERVICE:8081/company";
-    final String Job_SERVICE_BASE_URL="http://localhost:8082/job";
-    final String COMPANY_SERVICE_BASE_URL="http://localhost:8081/company";
+//    final String Job_SERVICE_BASE_URL="http://localhost:8082/job";
+//    final String COMPANY_SERVICE_BASE_URL="http://localhost:8081/company";
 
     @CircuitBreaker(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
 //    @Retry(name = "jobServiceBreaker", fallbackMethod = "jobServiceFallBackMethod")
