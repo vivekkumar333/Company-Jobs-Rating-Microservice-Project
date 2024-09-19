@@ -66,6 +66,12 @@ public class Company {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Company [id=" + id + ", companyName=" + companyName + ", companyBusiness=" + companyBusiness
+				+ ", companyOrigin=" + companyOrigin + "]";
+	}
+
 
 
 }

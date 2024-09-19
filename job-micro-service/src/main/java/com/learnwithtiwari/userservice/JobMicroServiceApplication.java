@@ -10,7 +10,8 @@ import org.springframework.web.client.RestTemplate;
 public class JobMicroServiceApplication {
 	
 
-	@Bean @LoadBalanced
+	@Bean 
+	@LoadBalanced   // Enable Microservice's to do inter-communication using SERVICE-NAME registered with service-registry.
 	RestTemplate resetTemplate() {
 		return new RestTemplate();
 	}

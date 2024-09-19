@@ -6,6 +6,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,10 @@ import com.learnwithtiwari.userservice.request.UpdateJobRequest;
 import com.learnwithtiwari.userservice.response.CompanyDTO;
 import com.learnwithtiwari.userservice.response.JobsResponseDTO;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
+
 @Service
 public class JobsService {
 
@@ -29,12 +34,22 @@ public class JobsService {
     @Autowired
     RestTemplate restTemplate;
     
-    final String COMPANY_BASE_URL="http://COMPANY-MICRO-SERVICE:8081/company";
+    
+    @Value("${company-service.url}")
+    private String COMPANY_BASE_URL;;
+    
+    public ResponseEntity<Object> companySerivceBreakerFallBack(Exception ex){
+    	 ex.printStackTrace();
+         return new ResponseEntity<>("Fallback response: Company-Service is currently unavailable", HttpStatus.SERVICE_UNAVAILABLE);
+     }
+
     
 
+    @CircuitBreaker(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
+//    @Retry(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
+    @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
     public ResponseEntity<Object> getAllJobs(){
-    	
-    	try {
+//    	try {
     		List<Jobs> jobList = jobsRepo.findAll();
             
             List<JobsResponseDTO> jobResponse = new ArrayList<>();
@@ -63,17 +78,18 @@ public class JobsService {
             }else{
                 return new ResponseEntity<>("Not found! Job list is empty", HttpStatus.NOT_FOUND);
             }
-    	}catch(RestClientException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
-    	}catch(RuntimeException ex) {
-    		ex.printStackTrace();
-    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-    	}
+//    	}catch(RestClientException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.SERVICE_UNAVAILABLE);
+//    	}catch(RuntimeException ex) {
+//    		ex.printStackTrace();
+//    		return new ResponseEntity<>(ex.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//    	}
         
     }
 
-    
+    @CircuitBreaker(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
+    @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
     public ResponseEntity<String> createJobs(JobCreationRequest jobInput){
     	
     	try {
@@ -108,7 +124,9 @@ public class JobsService {
         
     }
 
-    
+
+    @CircuitBreaker(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
+    @RateLimiter(name = "companyServiceBreaker", fallbackMethod = "companySerivceBreakerFallBack")
     public ResponseEntity<String> updateJobs(Long jobId, UpdateJobRequest updateJob){
     	
     	try {
