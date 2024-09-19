@@ -78,4 +78,12 @@ public class CompanyDTO {
 	}
 
 
+	@Override
+	public String toString() {
+		return "CompanyDTO [id=" + id + ", companyName=" + companyName + ", companyBusiness=" + companyBusiness
+				+ ", companyOrigin=" + companyOrigin + "]";
+	}
+
+
+	
 }

@@ -183,6 +183,14 @@ public class Jobs {
 		return true;
 	}
 
+	@Override
+	public String toString() {
+		return "Jobs [jobId=" + jobId + ", jobTitle=" + jobTitle + ", skillSet=" + skillSet + ", description="
+				+ description + ", minSalary=" + minSalary + ", maxSalary=" + maxSalary + ", location=" + location
+				+ ", companyId=" + companyId + "]";
+	}
 
+
+	
 
 }

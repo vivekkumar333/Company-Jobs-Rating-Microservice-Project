@@ -117,6 +117,16 @@ public class JobsResponseDTO {
 				return false;
 			return true;
 		}
+
+
+		@Override
+		public String toString() {
+			return "JobsResponseDTO [jobTitle=" + jobTitle + ", skillSet=" + skillSet + ", description=" + description
+					+ ", minSalary=" + minSalary + ", maxSalary=" + maxSalary + ", location=" + location + ", company="
+					+ company + "]";
+		}
 	    
 	    
+		
+		
 }
